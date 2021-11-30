@@ -41,7 +41,7 @@ void showField(char player[10][10]) {
     }
 }
 
-bool put(int deck, char player[10][10], int x, int y, char direction='N') {
+bool put(int deck, char player[10][10], int x, int y, char direction = 'N') {
     if (x < 0 or x > 10 or y < 0 or y > 10) {
         return 0;
     }
@@ -160,13 +160,35 @@ void fillingFields(char player[10][10]) {
     }
 }
 
+void battle(char playerField[10][10], char playerBattleField[10][10], char secondPlayerField[10][10], bool queue) {
+    int x, y;
+
+    std::cout << "Your field:" << std::endl;
+    showField(playerField);
+    std::cout << "Your battle field:" << std::endl;
+    showField(playerBattleField);
+    std::cout << "Enter x(1-10) and y(1-10): ";
+    std::cin >> x >> y;
+    if (secondPlayerField[x - 1][y - 1] == '@') {
+        std::cout << "You hit the target!"<<std::endl;
+    } else if (secondPlayerField[x - 1][y - 1] == 'x') {
+        if (queue == 1)
+            queue = 0;
+        else queue = 1;
+    } else std::cout << "You missed the target!"<<std::endl;
+    playerBattleField[x-1][y-1]='x';
+    secondPlayerField[x-1][y-1]='x';
+}
+
 
 int main() {
 
     char firstPlayer[10][10], secondPlayer[10][10];
-    bool first = 0;
+    char firstPlayerBattleField[10][10], secondBattleField[10][10];
+    bool queue = 1;
 
     fillingFieldsVoid(firstPlayer, secondPlayer);
+    fillingFieldsVoid(firstPlayerBattleField, secondBattleField);
 
     std::cout << "First Player" << std::endl;
     fillingFields(firstPlayer);
@@ -177,7 +199,14 @@ int main() {
     showField(firstPlayer);
 
     while (checkingFieldsWin(firstPlayer, secondPlayer)) {
-
-
+        if(queue==1){
+            std::cout<<"First player:"<<std::endl;
+            battle(firstPlayer,firstPlayerBattleField,secondPlayer,queue);
+            queue=0;
+        }else{
+            std::cout<<"Second player:"<<std::endl;
+            battle(secondPlayer,secondBattleField,firstPlayer,queue);
+            queue=1;
+        }
     }
 }
