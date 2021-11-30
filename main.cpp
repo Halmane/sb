@@ -39,12 +39,15 @@ bool checkingFieldsWin(char firstPlayer[10][10], char secondPlayer[10][10]) {
 	return 1;
 }
 
-void showField(char player[10][10]) {
+void showField(char player[10][10],bool showShips=false) {
 	const int maxHeightAndWidth = 10;
+
 	for (int i = 0; i < maxHeightAndWidth; i++) {
-		for (int j = 0; j < maxHeightAndWidth; j++)
-			std::cout << player[i][j] << " ";
-		std::cout << std::endl;
+		for (int j = 0; j < maxHeightAndWidth; j++) {
+            if (showShips and player[10][10]=='@')
+                std::cout << "o ";
+            std::cout << player[i][j] << " " << std::endl;
+        }
 	}
 }
 
@@ -176,7 +179,7 @@ void fillingFields(char player[10][10]) {
 	}
 }
 
-void battle(char playerField[10][10], char playerBattleField[10][10], char secondPlayerField[10][10], bool queue) {
+void battle(char playerField[10][10], char secondPlayerField[10][10], bool queue) {
 	int x, y;
 	const char ship = '@';
 	const char emptyField = 'o';
@@ -184,7 +187,7 @@ void battle(char playerField[10][10], char playerBattleField[10][10], char secon
 	std::cout << "Your field:" << std::endl;
 	showField(playerField);
 	std::cout << "Your battle field:" << std::endl;
-	showField(playerBattleField);
+	showField(secondPlayerField,true);
 	std::cout << "Enter x(1-10) and y(1-10): ";
 	std::cin >> x >> y;
 	x -= 1;
@@ -198,12 +201,10 @@ void battle(char playerField[10][10], char playerBattleField[10][10], char secon
 	}
 	else if (secondPlayerField[x][y] == ship) {
 		std::cout << "You hit the target!" << std::endl;
-		playerBattleField[x][y] = 'x';
 		secondPlayerField[x][y] = 'x';
 	}
 	else {
 		std::cout << "You missed the target!" << std::endl;
-		playerBattleField[x][y] = 'x';
 		secondPlayerField[x][y] = 'x';
 	}
 }
@@ -212,11 +213,10 @@ void battle(char playerField[10][10], char playerBattleField[10][10], char secon
 int main() {
 
 	char firstPlayer[10][10], secondPlayer[10][10];
-	char firstPlayerBattleField[10][10], secondBattleField[10][10];
 	bool queue = 1;
 
 	fillingFieldsVoid(firstPlayer, secondPlayer);
-	fillingFieldsVoid(firstPlayerBattleField, secondBattleField);
+
 
 	std::cout << "First Player" << std::endl;
 	fillingFields(firstPlayer);
@@ -224,17 +224,16 @@ int main() {
 	std::cout << "Second Player" << std::endl;
 	fillingFields(secondPlayer);
 
-	showField(firstPlayer);
 
 	while (checkingFieldsWin(firstPlayer, secondPlayer)) {
 		if (queue == 1) {
 			std::cout << "First player:" << std::endl;
-			battle(firstPlayer, firstPlayerBattleField, secondPlayer, queue);
+			battle(firstPlayer, secondPlayer, queue);
 			queue = 0;
 		}
 		else {
 			std::cout << "Second player:" << std::endl;
-			battle(secondPlayer, secondBattleField, firstPlayer, queue);
+			battle(secondPlayer, firstPlayer, queue);
 			queue = 1;
 		}
 	}
