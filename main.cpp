@@ -1,19 +1,23 @@
 #include <iostream>
 
 void fillingFieldsVoid(char firstPlayer[10][10], char secondPlayer[10][10]) {
-    for (int i = 0; i < 10; i++)
-        for (int j = 0; j < 10; j++) {
-            firstPlayer[i][j] = 'o';
-            secondPlayer[i][j] = 'o';
+    const char emptyField = 'o';
+    const int maxHeightAndWidth = 10;
+    for (int i = 0; i < maxHeightAndWidth; i++)
+        for (int j = 0; j < maxHeightAndWidth; j++) {
+            firstPlayer[i][j] = emptyField;
+            secondPlayer[i][j] = emptyField;
         }
 }
 
 bool checkingFieldsWin(char firstPlayer[10][10], char secondPlayer[10][10]) {
     bool win = 1;
+    const char ship = '@';
+    const int maxHeightAndWidth = 10;
 
-    for (int i = 0; i < 10; i++)
-        for (int j = 0; j < 10; j++) {
-            if (secondPlayer[i][j] == '@')
+    for (int i = 0; i < maxHeightAndWidth; i++)
+        for (int j = 0; j < maxHeightAndWidth; j++) {
+            if (secondPlayer[i][j] == ship)
                 win = 0;
         }
     if (win != 0) {
@@ -21,9 +25,9 @@ bool checkingFieldsWin(char firstPlayer[10][10], char secondPlayer[10][10]) {
         return 0;
     } else win = 1;
 
-    for (int i = 0; i < 10; i++)
-        for (int j = 0; j < 10; j++) {
-            if (firstPlayer[i][j] == '@')
+    for (int i = 0; i < maxHeightAndWidth; i++)
+        for (int j = 0; j < maxHeightAndWidth; j++) {
+            if (firstPlayer[i][j] == ship)
                 win = 0;
         }
     if (win != 0) {
@@ -34,77 +38,83 @@ bool checkingFieldsWin(char firstPlayer[10][10], char secondPlayer[10][10]) {
 }
 
 void showField(char player[10][10]) {
-    for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 10; j++)
+    const int maxHeightAndWidth = 10;
+    for (int i = 0; i < maxHeightAndWidth; i++) {
+        for (int j = 0; j < maxHeightAndWidth; j++)
             std::cout << player[i][j] << " ";
         std::cout << std::endl;
     }
 }
 
 bool put(int deck, char player[10][10], int x, int y, char direction = 'N') {
-    if (x < 0 or x > 10 or y < 0 or y > 10) {
+    x -= 1;
+    y -= 1;
+    const int maxHeightAndWidth = 10;
+    const int minHeightAndWidth = 10;
+    const char ship = '@';
+    if (x < minHeightAndWidth or x > maxHeightAndWidth or y < minHeightAndWidth or y > maxHeightAndWidth) {
         return 0;
     }
-    if (deck == 1 and player[y - 1][x - 1] == '@') {
+    if (deck == 1 and player[y][x] == ship) {
         return 0;
     } else if (direction == 'N' or direction == 'n') {
-        if (y - deck < 0)
+        if (y - deck < minHeightAndWidth)
             return 0;
         else {
             for (int i = 0; i < deck; i++) {
-                if (player[y - 1][x - 1] == '@')
+                if (player[y][x] == ship)
                     return 0;
                 y--;
             }
             y += deck;
         }
         for (int i = 0; i < deck; i++) {
-            player[y - 1][x - 1] = '@';
+            player[y][x] = ship;
             y--;
         }
     } else if (direction == 'E' or direction == 'e') {
-        if (x + deck > 9)
+        if (x + deck > maxHeightAndWidth)
             return 0;
         else {
             for (int i = 0; i < deck; i++) {
-                if (player[y - 1][x - 1] == '@')
+                if (player[y][x] == ship)
                     return 0;
                 x++;
             }
             x -= deck;
         }
         for (int i = 0; i < deck; i++) {
-            player[y - 1][x - 1] = '@';
+            player[y][x] = ship;
             x++;
         }
     } else if (direction == 'W' or direction == 'w') {
-        if (x - deck < 0)
+        if (x - deck < minHeightAndWidth)
             return 0;
         else {
             for (int i = 0; i < deck; i++) {
-                if (player[y - 1][x - 1] == '@')
+                if (player[y][x] == ship)
                     return 0;
                 x--;
             }
             x += deck;
         }
         for (int i = 0; i < deck; i++) {
-            player[y - 1][x - 1] = '@';
+            player[y][x] = ship;
             x--;
         }
     } else if (direction == 'S' or direction == 's') {
-        if (y + deck > 9)
+        if (y + deck > maxHeightAndWidth)
             return 0;
         else {
             for (int i = 0; i < deck; i++) {
-                if (player[y - 1][x - 1] == '@')
+                if (player[y][x] == ship)
                     return 0;
                 y++;
             }
             y -= deck;
         }
         for (int i = 0; i < deck; i++) {
-            player[y - 1][x - 1] = '@';
+            player[y][x] = ship;
             y++;
         }
     }
@@ -162,6 +172,8 @@ void fillingFields(char player[10][10]) {
 
 void battle(char playerField[10][10], char playerBattleField[10][10], char secondPlayerField[10][10], bool queue) {
     int x, y;
+    const char ship = '@';
+    const char emptyField = 'o';
 
     std::cout << "Your field:" << std::endl;
     showField(playerField);
@@ -169,15 +181,23 @@ void battle(char playerField[10][10], char playerBattleField[10][10], char secon
     showField(playerBattleField);
     std::cout << "Enter x(1-10) and y(1-10): ";
     std::cin >> x >> y;
-    if (secondPlayerField[x - 1][y - 1] == '@') {
-        std::cout << "You hit the target!"<<std::endl;
-    } else if (secondPlayerField[x - 1][y - 1] == 'x') {
+    x -= 1;
+    y -= 1;
+    if (x < 0 or x > 10 or y < 0 or y > 10 or secondPlayerField[x][y] != ship or
+        secondPlayerField[x][y] != emptyField) {
+        std::cout << "Error!!" << std::endl << "Try again!" << std::endl;
         if (queue == 1)
             queue = 0;
         else queue = 1;
-    } else std::cout << "You missed the target!"<<std::endl;
-    playerBattleField[x-1][y-1]='x';
-    secondPlayerField[x-1][y-1]='x';
+    } else if (secondPlayerField[x][y] == ship) {
+        std::cout << "You hit the target!" << std::endl;
+        playerBattleField[x][y] = 'x';
+        secondPlayerField[x][y] = 'x';
+    } else {
+        std::cout << "You missed the target!" << std::endl;
+        playerBattleField[x][y] = 'x';
+        secondPlayerField[x][y] = 'x';
+    }
 }
 
 
@@ -199,14 +219,14 @@ int main() {
     showField(firstPlayer);
 
     while (checkingFieldsWin(firstPlayer, secondPlayer)) {
-        if(queue==1){
-            std::cout<<"First player:"<<std::endl;
-            battle(firstPlayer,firstPlayerBattleField,secondPlayer,queue);
-            queue=0;
-        }else{
-            std::cout<<"Second player:"<<std::endl;
-            battle(secondPlayer,secondBattleField,firstPlayer,queue);
-            queue=1;
+        if (queue == 1) {
+            std::cout << "First player:" << std::endl;
+            battle(firstPlayer, firstPlayerBattleField, secondPlayer, queue);
+            queue = 0;
+        } else {
+            std::cout << "Second player:" << std::endl;
+            battle(secondPlayer, secondBattleField, firstPlayer, queue);
+            queue = 1;
         }
     }
 }
