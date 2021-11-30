@@ -47,8 +47,9 @@ void showField(char player[10][10],bool showShips=false) {
 		for (int j = 0; j < maxHeightAndWidth; j++) {
             if (showShips and player[10][10]=='@')
                 std::cout << "o ";
-            std::cout << player[i][j] << " " << std::endl;
+            std::cout << player[i][j] << " " ;
         }
+        std::cout << std::endl;
 	}
 }
 
@@ -179,8 +180,12 @@ void fillingFields(char player[10][10]) {
 		}
 	}
 }
+enum turn {
+    FirstPlayerTurn,
+    SecondPlayerTurn
+};
 
-void battle(char playerField[10][10], char secondPlayerField[10][10], bool turnFirst) {
+void battle(char playerField[10][10], char secondPlayerField[10][10], turn currentTurn) {
 	int x, y;
 	const char ship = '@';
 	const char emptyField = 'o';
@@ -196,9 +201,9 @@ void battle(char playerField[10][10], char secondPlayerField[10][10], bool turnF
 	if (x < 0 or x > 10 or y < 0 or y > 10 or secondPlayerField[x][y] != ship or
 		secondPlayerField[x][y] != emptyField) {
 		std::cout << "Error!!" << std::endl << "Try again!" << std::endl;
-		if (turnFirst == 1)
-            turnFirst = 0;
-		else turnFirst = 1;
+		if (currentTurn == FirstPlayerTurn)
+            currentTurn = SecondPlayerTurn;
+		else currentTurn = FirstPlayerTurn;
 	}
 	else if (secondPlayerField[x][y] == ship) {
 		std::cout << "You hit the target!" << std::endl;
@@ -214,7 +219,9 @@ void battle(char playerField[10][10], char secondPlayerField[10][10], bool turnF
 int main() {
 
 	char firstPlayer[10][10], secondPlayer[10][10];
-	bool turnFirst = true;
+
+
+    turn currentTurn =  FirstPlayerTurn;
 
 	fillingFieldsVoid(firstPlayer, secondPlayer);
 
@@ -227,15 +234,15 @@ int main() {
 
 
 	while (checkingFieldsWin(firstPlayer, secondPlayer)) {
-		if (turnFirst == 1) {
+		if (currentTurn==FirstPlayerTurn) {
 			std::cout << "First player:" << std::endl;
-			battle(firstPlayer, secondPlayer, turnFirst);
-            turnFirst = false;
+			battle(firstPlayer, secondPlayer, currentTurn);
+            currentTurn = SecondPlayerTurn;
 		}
 		else {
 			std::cout << "Second player:" << std::endl;
-			battle(secondPlayer, firstPlayer, turnFirst);
-            turnFirst = true;
+			battle(secondPlayer, firstPlayer, currentTurn);
+            currentTurn = FirstPlayerTurn;
 		}
 	}
 }
