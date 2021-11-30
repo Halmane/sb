@@ -50,7 +50,7 @@ bool put(int deck, char player[10][10], int x, int y, char direction = 'N') {
     x -= 1;
     y -= 1;
     const int maxHeightAndWidth = 10;
-    const int minHeightAndWidth = 10;
+    const int minHeightAndWidth = 0;
     const char ship = '@';
     if (x < minHeightAndWidth or x > maxHeightAndWidth or y < minHeightAndWidth or y > maxHeightAndWidth) {
         return 0;
