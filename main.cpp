@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iso646.h>
 
+
 void fillingFieldsVoid(char firstPlayer[10][10], char secondPlayer[10][10]) {
 	const char emptyField = 'o';
 	const int maxHeightAndWidth = 10;
@@ -179,7 +180,7 @@ void fillingFields(char player[10][10]) {
 	}
 }
 
-void battle(char playerField[10][10], char secondPlayerField[10][10], bool queue) {
+void battle(char playerField[10][10], char secondPlayerField[10][10], bool turnFirst) {
 	int x, y;
 	const char ship = '@';
 	const char emptyField = 'o';
@@ -195,9 +196,9 @@ void battle(char playerField[10][10], char secondPlayerField[10][10], bool queue
 	if (x < 0 or x > 10 or y < 0 or y > 10 or secondPlayerField[x][y] != ship or
 		secondPlayerField[x][y] != emptyField) {
 		std::cout << "Error!!" << std::endl << "Try again!" << std::endl;
-		if (queue == 1)
-			queue = 0;
-		else queue = 1;
+		if (turnFirst == 1)
+            turnFirst = 0;
+		else turnFirst = 1;
 	}
 	else if (secondPlayerField[x][y] == ship) {
 		std::cout << "You hit the target!" << std::endl;
@@ -213,7 +214,7 @@ void battle(char playerField[10][10], char secondPlayerField[10][10], bool queue
 int main() {
 
 	char firstPlayer[10][10], secondPlayer[10][10];
-	bool queue = 1;
+	bool turnFirst = true;
 
 	fillingFieldsVoid(firstPlayer, secondPlayer);
 
@@ -226,15 +227,15 @@ int main() {
 
 
 	while (checkingFieldsWin(firstPlayer, secondPlayer)) {
-		if (queue == 1) {
+		if (turnFirst == 1) {
 			std::cout << "First player:" << std::endl;
-			battle(firstPlayer, secondPlayer, queue);
-			queue = 0;
+			battle(firstPlayer, secondPlayer, turnFirst);
+            turnFirst = false;
 		}
 		else {
 			std::cout << "Second player:" << std::endl;
-			battle(secondPlayer, firstPlayer, queue);
-			queue = 1;
+			battle(secondPlayer, firstPlayer, turnFirst);
+            turnFirst = true;
 		}
 	}
 }
